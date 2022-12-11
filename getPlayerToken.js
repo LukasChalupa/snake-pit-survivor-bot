@@ -23,7 +23,8 @@ export const getPlayerToken = async () => {
 				}),
 			}
 		)
-		if (createPlayerResponse.ok) {
+		const data = await createPlayerResponse.json()
+		if (data?.player?.id) {
 			return tokenFromFile
 		}
 	}
@@ -40,11 +41,12 @@ export const getPlayerToken = async () => {
 			}),
 		}
 	)
-	if (!createPlayerResponse.ok) {
-		throw new Error("invalid create player response")
-	}
 
 	const { playerToken } = await createPlayerResponse.json()
+
+	if (!playerToken) {
+		throw new Error("invalid create player response")
+	}
 
 	fs.writeFileSync(tokenPath, playerToken)
 

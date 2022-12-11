@@ -87,18 +87,19 @@ const run = async () => {
 				body: JSON.stringify(payload),
 			}
 		)
-		
-		if (!actionResponse.ok) {
-			throw new Error("invalid action response")
-		}
 
 		const actionData = await actionResponse.json()
 
-		const board = getBoardData(actionData)
-		const me = actionData.room.players.find((player) => player.id === actionData.yourPlayerId)
-		action = getNextMove(me, board)
+		if (!actionData.room) {
+			throw new Error("invalid action response")
+		}
 
-		if(actionData.status === 'ended') {
+		const board = getBoardData(actionData)
+		const me = actionData.room.players.find(
+			(player) => player.id === actionData.yourPlayerId
+		)
+		action = getNextMove(me, board)
+		if (actionData.room.status === "ended") {
 			return
 		}
 	}
