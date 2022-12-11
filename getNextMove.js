@@ -1,3 +1,5 @@
+import { FREE_SPACE_CODE } from "./snake-ai.js"
+
 export const getNextMove = (player, board) => {
 	const height = board.length
 	const width = board[0].length
@@ -6,6 +8,8 @@ export const getNextMove = (player, board) => {
 		player.fromHeadPosition[0].x - player.fromHeadPosition[1].x
 	const initialYDelta =
 		player.fromHeadPosition[0].y - player.fromHeadPosition[1].y
+
+	const initialDirection = getDirection(initialXDelta, initialYDelta)
 
 	const visited = Array(height)
 		.fill()
@@ -55,6 +59,7 @@ export const getNextMove = (player, board) => {
 				if (
 					(board[newPosition.y] ?? false) &&
 					(board[newPosition.y][newPosition.x] ?? false) &&
+					board[newPosition.y][newPosition.x] === FREE_SPACE_CODE &&
 					visited[newPosition.y][newPosition.x] === null
 				) {
 					stack.push(newPosition)
@@ -62,7 +67,7 @@ export const getNextMove = (player, board) => {
 			}
 		}
 
-		// console.table(visited)
+		console.table(visited)
 	}
 
 	let current = max
@@ -73,12 +78,20 @@ export const getNextMove = (player, board) => {
 				current.x - current.previous.x,
 				current.y - current.previous.y
 			)
+			break
 		}
 
 		current = current.previous
 	}
+	console.log(current)
 
-	return direction
+	console.log("initialDirection", initialDirection)
+	console.log("direction", initialDirection)
+
+	const relativeDirection = getRelativeDirection(initialDirection, direction)
+	console.log(relativeDirection)
+
+	return relativeDirection
 }
 
 const getDirection = (xDelta, yDelta) => {
@@ -89,4 +102,40 @@ const getDirection = (xDelta, yDelta) => {
 		: yDelta === 1
 		? "down"
 		: "up"
+}
+
+const getRelativeDirection = (initialDirection, direction) => {
+	if (initialDirection === "right") {
+		if (direction === "right") {
+			return "forward"
+		} else if (direction === "up") {
+			return "left"
+		} else {
+			return "right"
+		}
+	} else if (initialDirection === "left") {
+		if (direction === "left") {
+			return "forward"
+		} else if (direction === "up") {
+			return "right"
+		} else {
+			return "left"
+		}
+	} else if (initialDirection === "up") {
+		if (direction === "up") {
+			return "forward"
+		} else if (direction === "right") {
+			return "right"
+		} else {
+			return "left"
+		}
+	} else {
+		if (direction === "down") {
+			return "forward"
+		} else if (direction === "right") {
+			return "left"
+		} else {
+			return "right"
+		}
+	}
 }
