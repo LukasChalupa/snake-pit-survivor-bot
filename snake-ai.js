@@ -2,6 +2,7 @@
 
 import { getBoardData } from "./getBoardData.js"
 import { getNextMove } from "./getNextMove.js"
+import { getPlayerToken } from "./getPlayerToken.js"
 
 export const FREE_SPACE_CODE = 1
 export const WALL_CODE = 2
@@ -48,24 +49,7 @@ const getRoom = async () => {
 }
 
 const run = async () => {
-	// Create player
-	const createPlayerResponse = await fetch(
-		"https://snake-pit.onrender.com/create-player",
-		{
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				name: "Survivor",
-			}),
-		}
-	)
-	if (!createPlayerResponse.ok) {
-		throw new Error("invalid create player response")
-	}
-
-	const { playerToken } = await createPlayerResponse.json()
+	const playerToken = await getPlayerToken()
 
 	// Find room to join
 	// const room = await getRoom()
