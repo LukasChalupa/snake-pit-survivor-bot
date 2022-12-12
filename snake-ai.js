@@ -17,10 +17,10 @@ const createRoom = async () => {
 				"Content-Type": "application/json",
 			},
 			body: JSON.stringify({
-				width: 5,
-				height: 5,
+				width: 10,
+				height: 10,
 				maximumPlayers: 1,
-				maximumFood: 1,
+				maximumFood: 10,
 			}),
 		}
 	)
@@ -72,11 +72,11 @@ const run = async () => {
 
 	// Keep going forward
 	while (true) {
-		console.log(action)
 		const payload = {
 			playerToken,
 			action,
 		}
+		await new Promise((resolve) => setTimeout(resolve, 100))
 		const actionResponse = await fetch(
 			`https://snake-pit.onrender.com/room/${room.id}`,
 			{

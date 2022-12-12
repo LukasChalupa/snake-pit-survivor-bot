@@ -1,4 +1,6 @@
-import { FREE_SPACE_CODE } from "./snake-ai.js"
+import { WALL_CODE } from "./snake-ai.js"
+
+const FOOD_VALUE = 10
 
 export const getNextMove = (player, board) => {
 	const height = board.length
@@ -32,11 +34,13 @@ export const getNextMove = (player, board) => {
 		}
 		visited[current.y][current.x] = current.value
 
-		const xDeltas = [-1, 0, 1]
-		const yDeltas = [-1, 0, 1]
+		const xDeltas = [0, -1, 1]
+		const yDeltas = [0, -1, 1]
 
 		for (const xDelta of xDeltas.sort(() => Math.random() - 0.5)) {
 			for (const yDelta of yDeltas.sort(() => Math.random() - 0.5)) {
+				// for (const xDelta of xDeltas) {
+				// 	for (const yDelta of yDeltas) {
 				if (
 					(xDelta !== 0 && yDelta !== 0) ||
 					Math.abs(xDelta) === Math.abs(yDelta)
@@ -52,22 +56,26 @@ export const getNextMove = (player, board) => {
 					previous: current,
 				}
 
-				if (newPosition.value > max.value) {
-					max = newPosition
-				}
-
 				if (
 					(board[newPosition.y] ?? false) &&
 					(board[newPosition.y][newPosition.x] ?? false) &&
-					board[newPosition.y][newPosition.x] === FREE_SPACE_CODE &&
+					board[newPosition.y][newPosition.x] !== WALL_CODE &&
 					visited[newPosition.y][newPosition.x] === null
 				) {
+					// if (board[newPosition.y][newPosition.x] === FOOD_CODE) {
+					// 	newPosition.value += FOOD_VALUE
+					// }
+
+					if (newPosition.value > max.value) {
+						max = newPosition
+					}
+
 					stack.push(newPosition)
 				}
 			}
 		}
 
-		console.table(visited)
+		//console.table(visited)
 	}
 
 	let current = max
@@ -83,13 +91,9 @@ export const getNextMove = (player, board) => {
 
 		current = current.previous
 	}
-	console.log(current)
-
-	console.log("initialDirection", initialDirection)
-	console.log("direction", initialDirection)
-
+	console.log("directions", initialDirection, direction)
 	const relativeDirection = getRelativeDirection(initialDirection, direction)
-	console.log(relativeDirection)
+	console.log("relativeDirection", relativeDirection)
 
 	return relativeDirection
 }
