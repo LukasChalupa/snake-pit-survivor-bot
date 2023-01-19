@@ -1,4 +1,4 @@
-import { WALL_CODE } from "./snake-ai.js"
+import { FOOD_CODE, WALL_CODE } from "./snake-ai.js"
 
 const FOOD_VALUE = 10
 
@@ -37,6 +37,13 @@ export const getNextMove = (player, board) => {
 		const xDeltas = [0, -1, 1]
 		const yDeltas = [0, -1, 1]
 
+		// const neighbors = []
+		// for (const xDelta of xDeltas) {
+		// 	for (const yDelta of yDeltas) {
+		// 		neighbors.push({})
+		// 	}
+		// }
+
 		for (const xDelta of xDeltas.sort(() => Math.random() - 0.5)) {
 			for (const yDelta of yDeltas.sort(() => Math.random() - 0.5)) {
 				// for (const xDelta of xDeltas) {
@@ -62,9 +69,9 @@ export const getNextMove = (player, board) => {
 					board[newPosition.y][newPosition.x] !== WALL_CODE &&
 					visited[newPosition.y][newPosition.x] === null
 				) {
-					// if (board[newPosition.y][newPosition.x] === FOOD_CODE) {
-					// 	newPosition.value += FOOD_VALUE
-					// }
+					if (board[newPosition.y][newPosition.x] === FOOD_CODE) {
+						newPosition.value += FOOD_VALUE
+					}
 
 					if (newPosition.value > max.value) {
 						max = newPosition
