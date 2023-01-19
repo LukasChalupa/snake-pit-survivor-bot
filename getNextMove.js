@@ -33,7 +33,6 @@ export const getNextMove = (player, board) => {
 			continue
 		}
 		visited[current.y][current.x] = current.value
-		console.table(visited)
 
 		const xDeltas = [0, -1, 1]
 		const yDeltas = [0, -1, 1]
@@ -87,6 +86,7 @@ export const getNextMove = (player, board) => {
 				stack.push(neighbor)
 			})
 	}
+	// console.table(board)
 
 	let current = max
 	let direction = "forward"
@@ -101,7 +101,8 @@ export const getNextMove = (player, board) => {
 
 		current = current.previous
 	}
-	// console.log("directions", initialDirection, direction)
+	// console.log("initialDirection", initialDirection)
+	// console.log("newDirection", direction)
 	const relativeDirection = getRelativeDirection(initialDirection, direction)
 	// console.log("relativeDirection", relativeDirection)
 

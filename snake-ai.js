@@ -4,9 +4,9 @@ import { getBoardData } from "./getBoardData.js"
 import { getNextMove } from "./getNextMove.js"
 import { getPlayerToken } from "./getPlayerToken.js"
 
-export const FREE_SPACE_CODE = 1
-export const WALL_CODE = 2
-export const FOOD_CODE = 3
+export const FREE_SPACE_CODE = " "
+export const WALL_CODE = "X"
+export const FOOD_CODE = "O"
 
 const createRoom = async () => {
 	const createRoomResponse = await fetch(
@@ -76,6 +76,8 @@ const run = async () => {
 			playerToken,
 			action,
 		}
+		// console.log("Sending action", action)
+		// console.log("-----------------------")
 		await new Promise((resolve) => setTimeout(resolve, 100))
 		const actionResponse = await fetch(
 			`https://snake-pit.onrender.com/room/${room.id}`,
