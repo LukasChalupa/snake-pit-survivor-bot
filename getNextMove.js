@@ -1,6 +1,6 @@
 import { FOOD_CODE, WALL_CODE } from "./snake-ai.js"
 
-const FOOD_VALUE = 10
+const FOOD_VALUE = 2
 
 export const getNextMove = (player, board) => {
 	const height = board.length
@@ -33,27 +33,21 @@ export const getNextMove = (player, board) => {
 			continue
 		}
 		visited[current.y][current.x] = current.value
+		console.table(visited)
 
 		const xDeltas = [0, -1, 1]
 		const yDeltas = [0, -1, 1]
 
-		// const neighbors = []
-		// for (const xDelta of xDeltas) {
-		// 	for (const yDelta of yDeltas) {
-		// 		neighbors.push({})
-		// 	}
-		// }
-
-		for (const xDelta of xDeltas.sort(() => Math.random() - 0.5)) {
-			for (const yDelta of yDeltas.sort(() => Math.random() - 0.5)) {
-				// for (const xDelta of xDeltas) {
-				// 	for (const yDelta of yDeltas) {
+		const neighbors = []
+		for (const xDelta of xDeltas) {
+			for (const yDelta of yDeltas) {
 				if (
 					(xDelta !== 0 && yDelta !== 0) ||
 					Math.abs(xDelta) === Math.abs(yDelta)
 				) {
 					continue
 				}
+
 				const newX = current.x + xDelta
 				const newY = current.y + yDelta
 				const newPosition = {
@@ -64,25 +58,34 @@ export const getNextMove = (player, board) => {
 				}
 
 				if (
-					(board[newPosition.y] ?? false) &&
-					(board[newPosition.y][newPosition.x] ?? false) &&
-					board[newPosition.y][newPosition.x] !== WALL_CODE &&
-					visited[newPosition.y][newPosition.x] === null
+					!(board[newPosition.y] ?? false) ||
+					!(board[newPosition.y][newPosition.x] ?? false) ||
+					board[newPosition.y][newPosition.x] === WALL_CODE ||
+					visited[newPosition.y][newPosition.x] !== null
 				) {
-					if (board[newPosition.y][newPosition.x] === FOOD_CODE) {
-						newPosition.value += FOOD_VALUE
-					}
-
-					if (newPosition.value > max.value) {
-						max = newPosition
-					}
-
-					stack.push(newPosition)
+					continue
 				}
+
+				if (board[newPosition.y][newPosition.x] === FOOD_CODE) {
+					newPosition.value += FOOD_VALUE
+				}
+
+				neighbors.push(newPosition)
 			}
 		}
 
-		//console.table(visited)
+		neighbors
+			.sort(() => 1 - Math.random() * 2)
+			.sort((neighborA, neighborB) => {
+				return neighborA.value - neighborB.value
+			})
+			.forEach((neighbor) => {
+				if (neighbor.value > max.value) {
+					max = neighbor
+				}
+
+				stack.push(neighbor)
+			})
 	}
 
 	let current = max
@@ -98,9 +101,9 @@ export const getNextMove = (player, board) => {
 
 		current = current.previous
 	}
-	console.log("directions", initialDirection, direction)
+	// console.log("directions", initialDirection, direction)
 	const relativeDirection = getRelativeDirection(initialDirection, direction)
-	console.log("relativeDirection", relativeDirection)
+	// console.log("relativeDirection", relativeDirection)
 
 	return relativeDirection
 }
